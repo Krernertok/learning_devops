@@ -7,6 +7,7 @@
     sudo vi /etc/sysconfig/network-scripts/ifcfg-enp0s3
 
 Change the `ONBOOT` variable  from `no` to `yes`
+
     ONBOOT=yes
 
 ## Useful links
