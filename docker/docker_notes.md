@@ -96,7 +96,11 @@ For example:
 
 Quick port check:
 
-    docker container port <containesr>
+    docker container port <container>
+
+Actual IP address:
+
+    docker container inspect --format "{{ .NetworkSettings.IPAddress }}" webhost
 
 ## Docker registry
 
