@@ -22,6 +22,10 @@ Specify a name using the --name option:
 
     docker container run --publish 80:80 --name webhost --detach nginx
 
+Run a command in the container and exit (--rm to remove container automatically):
+
+    docker container run --rm <image> <command>
+
 To run a stopped container (i.e. a container that was already run before) use:
 
     docker container start <container>
@@ -94,6 +98,8 @@ For example:
 
 ## Docker networking
 
+[NAT (network address translation)](https://en.wikipedia.org/wiki/Network_address_translation#One-to-many_NAT)
+
 Quick port check:
 
     docker container port <container>
@@ -101,6 +107,30 @@ Quick port check:
 Actual IP address:
 
     docker container inspect --format "{{ .NetworkSettings.IPAddress }}" webhost
+
+Show networks:
+
+    docker network ls
+
+Inspect a network:
+
+    docker network inspect <network>
+
+Create a network:
+
+    docker network create --driver
+
+Attach a container to a network:
+
+    docker network connect <network> <container>
+
+Disconnect a container from a network:
+
+    docker network disconnect <network> <container>
+
+Run a container on a specific network:
+
+    docker container run --net <network> <image>
 
 ## Docker registry
 
