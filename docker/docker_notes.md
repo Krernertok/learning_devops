@@ -42,9 +42,9 @@ Stop container with ID (you only need to specify enough characters to identify a
 
     docker container stop <container>
 
-View logs of container:
+View logs of container (use -f to tail logs):
 
-    docker container logs <container>
+    docker container logs [OPTIONS] CONTAINER
 
 List the running processes of a container:
 
@@ -132,8 +132,140 @@ Run a container on a specific network:
 
     docker container run --net <network> <image>
 
-## Docker registry
+## Docker images
+
+[Docker Hub](https://hub.docker.com)
 
 Pull an image
 
-    docker pull <image name>
+    docker pull <repository:tag>
+
+View history of image:
+
+    docker image history <repository:tag>
+
+Inspect image:
+
+    docker image inspect <repository:tag>
+
+Assign tags to images:
+
+    docker image tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]
+
+Push image to registry:
+
+    docker image push [OPTIONS] NAME[:TAG]
+
+Log in to registry:
+
+    docker login [OPTIONS] [SERVER]
+
+Log out of registry:
+
+    docker logout [SERVER]
+
+Build docker image:
+
+    docker image build [OPTIONS] PATH | URL | -
+
+## Docker administration
+
+Show disk usage:
+
+    docker system df
+
+Remove dangling containers, images and networks:
+
+    docker system prune
+
+Remove all unused containers, images and networks:
+
+    docker system prune -a
+
+## Data volumes and bind mounts
+
+List volumes:
+
+    docker volume ls
+
+Inspect volume:
+
+    docker volume inspect VOLUME
+
+Add volume in Dockerfile:
+
+    VOLUME /path/to/volume
+
+Name a volume when running container (example):
+
+    docker container run -d --name mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v mysql-db:/var/lib/mysql mysql
+
+Create a volume (if you want to use a specific driver or label):
+
+    docker volume create [OPTIONS] [VOLUME]
+
+Use a bind mount when running:
+
+    docker container run -v /path/on/host:/path/in/container
+
+## Docker Compose
+
+Default file name is `docker-compose.yml`.
+
+Use a different file with:
+
+    docker compose -f filename.yml
+
+Setup networks and volumes, start containers:
+
+    docker-compose up
+
+Stop containers and remove networks and volumes:
+
+    docker-compose down
+
+Rebuild a service:
+
+    docker-compose build [SERVICE]
+
+## Docker Swarm
+
+Initialize a swarm:
+
+    docker swarm init
+
+Initialize a swarm with specific endpoint:
+
+    docker swarm init --advertise-addr IPADDR
+
+List nodes in swarm:
+
+    docker node ls
+
+Change a node's role:
+
+    docker node update --role ROLE NODE 
+
+Get a join token:
+
+    docker swarm join-token ROLE
+
+Leave a swarm:
+
+    docker swarm leave
+
+Docker run for swarms (user `--detach true` when automating):
+
+    docker service COMMAND
+
+For example:
+
+    docker service create alpine ping 8.8.8.8
+
+Add replicas of service:
+
+    docker service update SERVICE --replicas n
+
+Remove service:
+
+    docker service rm SERVICE
