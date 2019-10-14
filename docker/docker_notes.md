@@ -210,11 +210,15 @@ Use a bind mount when running:
 
 ## Docker Compose
 
-Default file name is `docker-compose.yml`.
+Default file name is `docker-compose.yml`. Override with `docker-compose.override.yml`.
 
 Use a different file with:
 
-    docker compose -f filename.yml
+    docker-compose -f filename.yml
+
+Multiple files with the ones coming later overriding the previous ones (running in detached mode):
+
+    docker-compose -f base.yml -f override.yml up -d
 
 Setup networks and volumes, start containers:
 
@@ -223,6 +227,10 @@ Setup networks and volumes, start containers:
 Stop containers and remove networks and volumes:
 
     docker-compose down
+
+Merge compose files together (and then probably redirect to a third file):
+
+    docker-compose -f first.yml -f second.yml config
 
 Rebuild a service:
 
@@ -258,6 +266,8 @@ Docker run for swarms (user `--detach true` when automating):
 
     docker service COMMAND
 
+### Services
+
 For example:
 
     docker service create alpine ping 8.8.8.8
@@ -269,3 +279,103 @@ Add replicas of service:
 Remove service:
 
     docker service rm SERVICE
+
+More details about a service:
+
+    docker service ps SERVICE
+
+### Networks
+
+Create overlay network:
+
+    docker network create --driver overlay NAME
+
+### Volumes
+
+Use volumes using `--mount`:
+
+    docker service create --mount type=volume,source=volume_name,target=/path/in/container
+
+### Stacks
+
+Deploy using a stack (or update stack):
+
+    docker stack deploy -c STACK_FILE STACK_NAME
+
+List services in stack:
+
+    docker stack services SERVICE
+
+List processes in stack:
+
+    docker stack ps SERVICE
+
+Remove stack:
+
+    docker stack rm STACK
+
+### Secrets
+
+Secrets are:
+
+- Usernames and passwords
+- Certificates and keys
+- Confidential data
+
+Create secret:
+
+    docker secret create SECRET [file]
+
+List secrets:
+
+    docker secret ls
+
+Create a service that uses the secret (example):
+
+    docker service create --name psql --secret psql_user --secret psql_pass -e POSTGRES_PASSWORD_FILE=/run/secrets/psql_pass -e POSTGRES_USER_FILE=/run/secrets/psql_user postgres
+
+Remove a secret:
+
+    docker service update --secret-rm SECRET
+
+### Updates
+
+Update image to newer version:
+
+    docker service update --image myapp:1.2.1 SERVICENAME
+
+Add and environment variable and remove a port:
+
+    docker service update --env-add NODE_ENV=production --publish-rm 8080
+
+Change number of replicas for multiple services:
+
+    docker service scale web=8 api=6
+
+Rebalance swarm (e.g. after adding nodes or making large changes):
+
+    docker service update --force SERVICE
+
+## Healthchecks
+
+Healthchecks show up when using `docker container ls`. Last 5 healthcheck results show up when using `docker container inspect`. Services replce tasks if the tasks fail a healthcheck. Updates wait for a healthcheck before proceeding.
+
+Healthcheck when running a container (example):
+
+    docker container run --name psql -d --health-cmd="pg_isready -U postgres || exit 1" postgres
+
+Healthcheck when running a service (example):
+
+    docker service create --name psql --health-cmd="pg_isready -U postgres || exit 1" postgres
+
+## Registry
+
+Run registry in a container:
+
+    docker container run -d -p 5000:5000 --name registry -v directory/path:/var/lib/registry registry
+
+Pushing and pulling from a registry:
+
+    docker push registry:port/image_name:tag
+
+    docker pull registry:port/image_name:tag
