@@ -1,5 +1,40 @@
 # Notes for Using Docker
 
+## General tips
+
+Group related `RUN` commands in order to keep them in the same layer (especially deleting files from previous commands).
+
+Swarm:
+
+- Use odd number of managers
+- Don't run work on manager nodes (`docker node update --availability drain <NODE>`)
+
+### Dockerfile maturity model
+
+1. Make it start
+2. Make it log all things to stdout/stderr
+3. Make it documented in file
+4. Make it work for others
+5. Make it lean
+6. Make it scale
+
+### Anti-patterns
+
+1. Trapping data
+    - *Problem:* Storing unique data in container
+    - **Solution:** Define VOLUME for each location
+2. Using `:latest`
+    - *Problem:* Image build pull `FROM` latest
+    - **Solution:** Use specific `FROM` tags
+    - *Problem:* Image builds install latest packages
+    - **Solution:** Specify version for critical `apt`/`yum`/`apk` packages
+3. Leaving default conifg
+    - *Problem:* Not changing app defaults or blindly copying VM conf
+    - **Solution:** Update default configs via `ENV`, `RUN` and `ENTRYPOINT`
+4. Environment specific
+    - *Problem:* Copy in environment config at image build
+    - **Solution:** Single Dockerfile with default `ENV`'s and overwrite per-environment with `ENTRYPOINT` script
+
 ## Information
 
 [Official Docker documentation](https://docs.docker.com)
