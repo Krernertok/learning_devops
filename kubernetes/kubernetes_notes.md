@@ -74,3 +74,76 @@ Delete service:
 
     kubectl delete service/SERVICE_NAME
 
+## Generators
+
+Generators == templates
+
+Output generator to yaml with `--dry-run -o yaml'
+
+Example:
+
+    kubectl create deployment test --image nginx --dry-run -o yaml
+ 
+    kubectl create job test --image nginx --dry-run -o yaml
+
+## K8s with YAML
+
+Basic command for doing things with YAML:
+
+    kubectl apply -f filename.yml
+
+Multiple yaml files:
+
+    kubectl apply -f myyaml/
+
+From a URL:
+
+    kubectl apply -f https://bret.run/pod.yml
+
+Keys for each `kind`:
+
+    kubectl explain services --recursive
+
+More information:
+
+    kubectl explain services.spec
+
+Drill down:
+
+    kubectl explain services.spec.type
+
+Server dry run:
+
+    kubectl apply -f filename.yml --server-dry-run
+
+Diff of what would happen:
+
+    kubectl diff -f filename.yml
+
+Labels go under `metadata:` and use a simple `key: value` format. Used as a glue for identifying which pods to change.
+
+## Topics to continue
+
+- Storage
+  - StatefulSets (e.g. for DBs)
+  - Volumes
+  - PersistentVolumes
+  - CSI plugins (in the future)
+- Ingress
+  - Ingress controllers
+    - Nginx
+    - Traefik - Bret's recommendation
+    - HAProxy
+    - F5
+    - Envoy
+    - Istio
+- Custom Resource Definitions (CRDs) and the operator pattern
+- Higher deployment abstractions
+  - E.g. Helm
+  - Compose on Kubernetes (using compose on k8s)
+  - Templating YAML: Kustomize
+- Kubernetes Dashboard
+- Namespaces and Context
+  - `kubectl get all --all-namespaces`
+  - kubectl config get-contexts
+  - ~/.kube/config
